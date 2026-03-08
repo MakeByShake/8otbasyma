@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>8 Наурыз — отбасыма</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:  #fdf8f3;
+      --blush:  #f5c5cb;
+      --rose:   #e8919a;
+      --deep:   #b5535e;
+      --peach:  #f7d5b5;
+      --sage:   #b5c9b0;
+      --lilac:  #cdb4db;
+      --gold:   #d4a76a;
+      --text:   #3d2b2e;
+      --muted:  #7a5c63;
+      --white:  #fff;
+    }
+    html, body {
+      height: 100%; width: 100%;
+      font-family: 'Georgia', serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .6s ease;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .screen.active { opacity: 1; pointer-events: all; z-index: 2; }
+
+    .bg-petals {
+      position: fixed; inset: 0; pointer-events: none;
+      overflow: hidden; z-index: 0;
+    }
+    .bg-petal {
+      position: absolute;
+      width: 12px; height: 16px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-40px) rotate(0deg); opacity: .5; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ─── SCREEN 0 — выбор человека ─── */
+    #s0 { background: linear-gradient(160deg, #fff5f7 0%, #fdf0e8 60%, #f0eaf8 100%); }
+    .s0-ornament {
+      font-size: 3rem; margin-bottom: 8px;
+      animation: float 4s ease-in-out infinite;
+    }
+    .s0-date {
+      font-size: .75rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--rose); margin-bottom: 16px;
+    }
+    .s0-title {
+      font-size: 1.35rem; line-height: 1.5;
+      color: var(--deep); text-align: center; margin-bottom: 6px;
+      font-style: italic;
+    }
+    .s0-sub {
+      font-size: .82rem; color: var(--muted); text-align: center;
+      margin-bottom: 28px;
+    }
+    .person-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+      max-width: 300px;
+    }
+    .person-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 12px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      color: #fff;
+      transition: transform .2s, box-shadow .2s;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    }
+    .person-btn:active { transform: scale(.95); }
+    .person-btn .p-emoji { font-size: 1.9rem; margin-bottom: 6px; }
+    .person-btn .p-name { font-size: .95rem; font-style: italic; }
+    .btn-mama  { background: linear-gradient(135deg, #e8919a, #b5535e); box-shadow: 0 4px 20px rgba(181,83,94,.35); }
+    .btn-apa   { background: linear-gradient(135deg, #cdb4db, #9a6bbf); box-shadow: 0 4px 20px rgba(154,107,191,.35); }
+    .btn-aiary { background: linear-gradient(135deg, #f7c48a, #d4a76a); box-shadow: 0 4px 20px rgba(212,167,106,.35); }
+    .btn-rabia { background: linear-gradient(135deg, #b5c9b0, #7aab6e); box-shadow: 0 4px 20px rgba(122,171,110,.35); }
+    .s0-footer {
+      position: absolute; bottom: 20px;
+      font-size: .65rem; color: #c9a8ad; letter-spacing: .1em;
+    }
+
+    /* ─── SCREEN 1 ─── */
+    #s1 { background: linear-gradient(160deg, #fff5f7 0%, #fdf0e8 60%, #f0eaf8 100%); }
+    .s1-ornament {
+      font-size: 3rem; margin-bottom: 8px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    .s1-date {
+      font-size: .75rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--rose); margin-bottom: 28px;
+    }
+    .s1-title {
+      font-size: 1.55rem; line-height: 1.4;
+      color: var(--deep); text-align: center; margin-bottom: 16px;
+      font-style: italic;
+    }
+    .s1-sub {
+      font-size: .9rem; line-height: 1.7; color: var(--muted);
+      text-align: center; max-width: 300px; margin-bottom: 40px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 36px;
+      border: none; border-radius: 50px; cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-size: 1rem; letter-spacing: .03em;
+      background: linear-gradient(135deg, var(--rose), var(--deep));
+      color: #fff; box-shadow: 0 4px 20px rgba(181,83,94,.3);
+      transition: transform .2s, box-shadow .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.96); box-shadow: 0 2px 10px rgba(181,83,94,.2); }
+    .s1-footer {
+      position: absolute; bottom: 20px;
+      font-size: .65rem; color: #c9a8ad; letter-spacing: .1em;
+    }
+
+    /* ─── SCREEN 2 ─── */
+    #s2 { background: linear-gradient(170deg, #fff9fb 0%, #f8f3ff 100%); justify-content: flex-start; padding-top: 0; }
+
+    .bouquet-header {
+      width: 100%; text-align: center;
+      padding: 20px 20px 0;
+    }
+    .bouquet-header h2 {
+      font-size: 1.1rem; color: var(--deep); font-style: italic;
+    }
+    .progress-bar {
+      width: 140px; height: 4px; background: #e8d5d8;
+      border-radius: 2px; margin: 10px auto 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--blush), var(--rose));
+      border-radius: 2px;
+      transition: width .5s ease;
+    }
+
+    .garden {
+      flex: 1; width: 100%; position: relative;
+      max-height: 55vh; overflow: hidden;
+    }
+
+    .wish-area {
+      width: 100%; padding: 0 20px;
+    }
+    .wish-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 22px;
+      box-shadow: 0 4px 24px rgba(181,83,94,.1);
+      min-height: 80px;
+      position: relative;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--rose);
+    }
+    .wish-tag {
+      font-size: .6rem; text-transform: uppercase; letter-spacing: .15em;
+      color: var(--rose); margin-bottom: 6px;
+    }
+    .wish-text {
+      font-size: .92rem; line-height: 1.6; color: var(--text);
+      font-style: italic;
+      opacity: 0;
+      transition: opacity .4s ease .1s;
+    }
+    .wish-text.show { opacity: 1; }
+    .wish-placeholder {
+      font-size: .88rem; color: #cbb5b8; font-style: italic; text-align: center;
+    }
+
+    .btn-next {
+      width: calc(100% - 40px); margin: 0 20px;
+    }
+    .btn-finish {
+      background: linear-gradient(135deg, var(--sage), #7aab6e);
+      box-shadow: 0 4px 20px rgba(120,170,110,.3);
+    }
+
+    .flower {
+      position: absolute;
+      cursor: pointer;
+      transform-origin: bottom center;
+      animation: bloom .6s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes bloom {
+      0%   { transform: scale(0) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0);   opacity: 1; }
+    }
+
+    /* ─── SCREEN 3 ─── */
+    #s3 {
+      background: linear-gradient(160deg, #fff5f7 0%, #f5f0ff 100%);
+      text-align: center;
+    }
+    .s3-bouquet-wrap {
+      position: relative; width: 220px; height: 220px; margin: 0 auto 20px;
+    }
+    .s3-glow {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,197,203,.5) 0%, transparent 70%);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    .s3-title {
+      font-size: 1.3rem; color: var(--deep); font-style: italic;
+      line-height: 1.5; margin-bottom: 12px;
+    }
+    .s3-text {
+      font-size: .88rem; line-height: 1.7; color: var(--muted);
+      max-width: 300px; margin: 0 auto 28px;
+    }
+
+    /* ─── SCREEN 4 ─── */
+    #s4 {
+      background: linear-gradient(160deg, #3d2b2e 0%, #5c3840 100%);
+      text-align: center;
+    }
+    .stars { font-size: 1.2rem; letter-spacing: 6px; margin-bottom: 20px; opacity: .6; }
+    .s4-ornament { font-size: 2.5rem; margin-bottom: 16px; }
+    .s4-quote {
+      font-size: 1.1rem; font-style: italic; line-height: 1.7;
+      color: #f9e8d0; max-width: 300px; margin: 0 auto 24px;
+    }
+    .s4-quote span { color: var(--blush); }
+    .s4-from {
+      font-size: .75rem; letter-spacing: .2em; color: #b5899a;
+      text-transform: uppercase; margin-bottom: 36px;
+    }
+    .btn-restart {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.3);
+      color: #f9e8d0;
+      box-shadow: none;
+      font-size: .85rem; padding: 12px 28px;
+    }
+
+    .confetti-piece {
+      position: fixed; top: -10px; pointer-events: none;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+      z-index: 9999;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
+    @media (max-height: 650px) {
+      .s1-title { font-size: 1.3rem; }
+      .garden { max-height: 44vh; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-petals" id="bgPetals"></div>
+
+<!-- ══════════ ЭКРАН 0 — ВЫБОР ══════════ -->
+<div class="screen active" id="s0">
+  <div class="s0-ornament">🌸</div>
+  <p class="s0-date">8 Наурыз 2026</p>
+  <h1 class="s0-title">Гүл шоғы кімге арналған?</h1>
+  <p class="s0-sub">Өзіңді таңда</p>
+
+  <div class="person-grid">
+    <button class="person-btn btn-mama" onclick="selectPerson('mama')">
+      <span class="p-emoji">🌹</span>
+      <span class="p-name">Мама</span>
+    </button>
+    <button class="person-btn btn-apa" onclick="selectPerson('apa')">
+      <span class="p-emoji">🌷</span>
+      <span class="p-name">Апа</span>
+    </button>
+    <button class="person-btn btn-aiary" onclick="selectPerson('aiary')">
+      <span class="p-emoji">🌼</span>
+      <span class="p-name">Айару</span>
+    </button>
+    <button class="person-btn btn-rabia" onclick="selectPerson('rabia')">
+      <span class="p-emoji">🌺</span>
+      <span class="p-name">Рабия</span>
+    </button>
+  </div>
+
+  <p class="s0-footer">отбасымның аруларына арналады ✦</p>
+</div>
+
+<!-- ══════════ ЭКРАН 1 ══════════ -->
+<div class="screen" id="s1">
+  <div class="s1-ornament" id="s1Emoji">🌸</div>
+  <p class="s1-date">8 Наурыз 2026</p>
+  <h1 class="s1-title" id="s1Title">Бұл гүл шоғы —<br>отбасымның аруларына арналады</h1>
+  <p class="s1-sub" id="s1Sub"></p>
+  <button class="btn" onclick="startBouquet()">Гүл шоғын ашу</button>
+  <p class="s1-footer" id="s1Footer">Ізгі тілекпен, өзіңнің балаңнан ✦</p>
+</div>
+
+<!-- ══════════ ЭКРАН 2 ══════════ -->
+<div class="screen" id="s2">
+  <div class="bouquet-header">
+    <h2>Гүл шоғыңды жина</h2>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="garden" id="garden"></div>
+
+  <div class="wish-area">
+    <div class="wish-card" id="wishCard">
+      <div class="wish-placeholder" id="wishPlaceholder">Гүл қосу үшін батырманы бас ✿</div>
+      <div class="wish-tag" id="wishTag" style="display:none"></div>
+      <div class="wish-text" id="wishText"></div>
+    </div>
+    <button class="btn btn-next" id="btnNext" onclick="addFlower()">+ Тағы бір гүл</button>
+  </div>
+</div>
+
+<!-- ══════════ ЭКРАН 3 ══════════ -->
+<div class="screen" id="s3">
+  <div class="s3-bouquet-wrap">
+    <div class="s3-glow"></div>
+    <div style="font-size:9rem;line-height:1;position:relative">💐</div>
+  </div>
+  <h2 class="s3-title" id="s3Title">Гүл шоғы жиналды.<br>8 Наурыз мерекең құтты болсын!</h2>
+  <p class="s3-text" id="s3Text">
+    Сіз күн сайын бізге жылулық пен мейірім сыйлайсыз.
+    Бүгін біз Сізге осы гүл шоғын арнаймыз.
+  </p>
+  <button class="btn" onclick="goSurprise()">Соңғы тосынсый ✨</button>
+</div>
+
+<!-- ══════════ ЭКРАН 4 ══════════ -->
+<div class="screen" id="s4">
+  <div class="stars">✦ ✦ ✦</div>
+  <div class="s4-ornament" id="s4Ornament">🌟</div>
+  <p class="s4-quote" id="s4Quote">
+    <span id="s4TagLine"></span><br><br>
+    Сіз біз үшін ең қымбат адамсыз.
+    Бақытты болыңыз, денсаулықта жүріңіз,
+    күніңіз нұрлы болсын.
+  </p>
+  <p class="s4-from">Ізгі тілекпен, өзіңнің балаңнан</p>
+  <button class="btn btn-restart" onclick="restart()">Қайта бастау</button>
+</div>
+
+<script>
+const personData = {
+  mama: {
+    emoji: '🌹',
+    color: { bg: 'linear-gradient(135deg,#e8919a,#b5535e)', accent: '#b5535e', petals: ['#f5c5cb','#e8919a','#b5535e','#f9d5d8'] },
+    s1Title: 'Бұл гүл шоғы —\nМамауға арналады',
+    s1Sub: 'Мамау, Сіз біздің үйдің жүрегісіз. Бұл гүл шоғы Сізге — ең қымбат адамға.',
+    s3Title: 'Гүл шоғы жиналды.\nМамау, 8 Наурыз мерекеңіз құтты болсын!',
+    s3Text: 'Мамау, Сізге үлкен рақмет. Сіздің мейіріміңіз бен қамқорлығыңыз біз үшін ең үлкен байлық.',
+    s4TagLine: 'Мамау, Сіз біздің үйдің жүрегісіз',
+    wishes: [
+      'Мамау, 8 наурыз құтты болсын! Сізге зор денсаулық, мол бақыт және жан тыныштығын тілеймін.',
+      'Мамау, Сіз біздің үйдің жүрегісіз. Әр күніңіз қуаныш пен берекеге толы болсын.',
+      'Мамау, Сізге әрдайым амандық, шаттық және жүзден кетпейтін күлкі тілеймін.',
+      'Мамау, Сіздің мейіріміңіз бен қамқорлығыңыз біз үшін ең үлкен байлық.',
+      'Мамау, Сізге тек жақсылық, тыныштық және көп қуаныш тілеймін.',
+      'Мамау, Сіз әрдайым біздің тірегімізсіз. Деніңіз сау, көңіліңіз көтеріңкі болсын.',
+      'Мамау, 8 наурызда Сізге шын жүректен бақыт, жылулық және ұзақ ғұмыр тілеймін.',
+      'Мамау, Сіздің әр күніңіз нұрлы, жүрегіңіз тыныш болсын.',
+      'Мамау, өміріңіз әдемі сәттер мен шынайы қуаныштарға толы болсын.',
+      'Мамау, Сіз әрдайым бақытты болуға лайықсыз.',
+    ],
+  },
+  apa: {
+    emoji: '🌷',
+    color: { bg: 'linear-gradient(135deg,#cdb4db,#9a6bbf)', accent: '#9a6bbf', petals: ['#cdb4db','#b89fd4','#9a6bbf','#d5c4e8'] },
+    s1Title: 'Бұл гүл шоғы —\nАпауға арналады',
+    s1Sub: 'Апау, Сіз біздің шаңырағымыздың ырысы мен берекесісіз. Бұл гүл шоғы Сізге арналады.',
+    s3Title: 'Гүл шоғы жиналды.\nАпау, 8 Наурыз мерекеңіз құтты болсын!',
+    s3Text: 'Апау, Сіздің ақылыңыз бен мейіріміңіз біз үшін өте қымбат. Сізге ұзақ ғұмыр тілеймін.',
+    s4TagLine: 'Апау, Сіз біздің берекемізсіз',
+    wishes: [
+      'Апау, 8 наурыз құтты болсын! Сізге зор денсаулық, ұзақ өмір және мол береке тілеймін.',
+      'Апау, Сіз біздің шаңырағымыздың ырысы мен берекесісіз.',
+      'Апау, Сізге әрдайым амандық, тыныштық және жүрекке жылу сыйлайтын күндер тілеймін.',
+      'Апау, Сіздің ақылыңыз бен мейіріміңіз біз үшін өте қымбат.',
+      'Апау, Сізге денсаулық, қуаныш және уайымсыз күндер тілеймін.',
+      'Апау, жүзіңізден күлкі кетпей, жүрегіңіз әрдайым тыныш болсын.',
+      'Апау, Сіздің ақ батаңыз бен жылы сөзіңіз бізге әрдайым күш береді.',
+      'Апау, Сізге тек жақсылық, береке және ұзақ ғұмыр тілеймін.',
+      'Апау, Сіз әрдайым отбасының шуағы болып жүре беріңіз.',
+      'Апау, өміріңіз тек қуаныш пен мейірімге толы болсын.',
+    ],
+  },
+  aiary: {
+    emoji: '🌼',
+    color: { bg: 'linear-gradient(135deg,#f7c48a,#d4a76a)', accent: '#d4a76a', petals: ['#f7d5b5','#f7c48a','#d4a76a','#f9e4c0'] },
+    s1Title: 'Бұл гүл шоғы —\nАйаруға арналады',
+    s1Sub: 'Айару, сен әрдайым ерекше жансың. Бұл гүл шоғы — саған.',
+    s3Title: 'Гүл шоғы жиналды.\nАйару, 8 Наурыз мерекең құтты болсын!',
+    s3Text: 'Айару, сен әрдайым күлімдеп, жайнап жүре бер. Армандарың орындалсын!',
+    s4TagLine: 'Айару, сен әрдайым ерекше жансың',
+    wishes: [
+      'Айару, 8 наурыз құтты болсын! Саған көп бақыт, күлкі және әдемі күндер тілеймін.',
+      'Айару, сен әрдайым күлімдеп, жайнап жүре бер.',
+      'Айару, саған қуанышқа толы күндер мен орындалатын армандар тілеймін.',
+      'Айару, сенің өмірің әрдайым жарқын әрі бақытты болсын.',
+      'Айару, саған шынайы бақыт, мықты денсаулық және әдемі сәттер тілеймін.',
+      'Айару, сен әрдайым ерекше, әдемі және мейірімді болып қала бер.',
+      'Айару, армандарың орындалып, жүрегің тек қуанышқа толсын.',
+      'Айару, сенің күлімсіреуің әрдайым жүзіңнен кетпесін.',
+      'Айару, саған тек жақсы адамдар, жақсы күндер және жақсы көңіл күй тілеймін.',
+      'Айару, сен бақытты болуға әбден лайықсың.',
+    ],
+  },
+  rabia: {
+    emoji: '🌺',
+    color: { bg: 'linear-gradient(135deg,#b5c9b0,#7aab6e)', accent: '#7aab6e', petals: ['#b5c9b0','#a8c0a2','#7aab6e','#c8dcc4'] },
+    s1Title: 'Бұл гүл шоғы —\nРабияға арналады',
+    s1Sub: 'Рабия, сен біздің үйдің қуанышысың. Бұл гүл шоғы — саған.',
+    s3Title: 'Гүл шоғы жиналды.\nРабия, 8 Наурыз мерекең құтты болсын!',
+    s3Text: 'Рабия, сенің өмірің әрдайым қуанышқа толы болсын. Сен біздің үйдің шуағысың!',
+    s4TagLine: 'Рабия, сен біздің үйдің қуанышысың',
+    wishes: [
+      'Рабия, 8 наурыз құтты болсын! Саған көп шаттық, жылулық және тәтті сәттер тілеймін.',
+      'Рабия, сенің өмірің әрдайым қуанышқа толы болсын.',
+      'Рабия, саған көтеріңкі көңіл күй, зор бақыт және әдемі армандар тілеймін.',
+      'Рабия, сен әрдайым жайнап, бақытты болып жүре бер.',
+      'Рабия, саған тек жақсы жаңалықтар мен керемет күндер тілеймін.',
+      'Рабия, сенің әр күнің ерекше әрі шуақты болсын.',
+      'Рабия, арманың асқақ, жүрегің нәзік, бақытың мол болсын.',
+      'Рабия, сенің өміріңде күлкі де, қуаныш та, махаббат та көп болсын.',
+      'Рабия, саған сәттілік, шабыт және шын жүректен бақыт тілеймін.',
+      'Рабия, сен әрдайым біздің үйдің қуанышы болып қала бер.',
+    ],
+  },
+};
+
+let currentPerson = null;
+let count = 0;
+let shuffledWishes = [];
+const TOTAL = 10;
+
+const flowerShapes = [
+  (c,s) => `<svg width="${s}" height="${s}" viewBox="0 0 60 80" fill="none">
+    <line x1="30" y1="80" x2="30" y2="38" stroke="#5a8a52" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M30 38 Q20 28 22 16 Q28 6 30 4 Q32 6 38 16 Q40 28 30 38Z" fill="${c}"/>
+    <path d="M30 38 Q18 32 14 20 Q14 10 20 8 Q24 12 30 38Z" fill="${c}" opacity=".75"/>
+    <path d="M30 38 Q42 32 46 20 Q46 10 40 8 Q36 12 30 38Z" fill="${c}" opacity=".75"/>
+    <ellipse cx="23" cy="26" rx="3" ry="5" fill="white" opacity=".2" transform="rotate(-20 23 26)"/>
+  </svg>`,
+
+  (c,s) => `<svg width="${s}" height="${s}" viewBox="0 0 60 80" fill="none">
+    <line x1="30" y1="80" x2="30" y2="42" stroke="#5a8a52" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="30" cy="30" r="18" fill="${c}"/>
+    ${[0,60,120,180,240,300].map(a=>`<ellipse cx="${30+16*Math.cos(a*Math.PI/180)}" cy="${30+16*Math.sin(a*Math.PI/180)}" rx="9" ry="6" fill="${c}" transform="rotate(${a} ${30+16*Math.cos(a*Math.PI/180)} ${30+16*Math.sin(a*Math.PI/180)})"/>`).join('')}
+    <circle cx="30" cy="30" r="8" fill="#f9e4b7"/>
+    <circle cx="28" cy="28" r="2" fill="white" opacity=".4"/>
+  </svg>`,
+
+  (c,s) => `<svg width="${s}" height="${s}" viewBox="0 0 60 80" fill="none">
+    <line x1="30" y1="80" x2="30" y2="42" stroke="#5a8a52" stroke-width="2.5" stroke-linecap="round"/>
+    ${[0,45,90,135,180,225,270,315].map(a=>`<ellipse cx="${30+14*Math.cos(a*Math.PI/180)}" cy="${30+14*Math.sin(a*Math.PI/180)}" rx="8" ry="4" fill="${c}" transform="rotate(${a} ${30+14*Math.cos(a*Math.PI/180)} ${30+14*Math.sin(a*Math.PI/180)})" opacity=".9"/>`).join('')}
+    <circle cx="30" cy="30" r="10" fill="#f7d5b5"/>
+    <circle cx="27" cy="27" r="3" fill="white" opacity=".35"/>
+  </svg>`,
+
+  (c,s) => `<svg width="${s}" height="${s}" viewBox="0 0 60 80" fill="none">
+    <line x1="30" y1="80" x2="30" y2="46" stroke="#5a8a52" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="30" cy="30" r="20" fill="${c}" opacity=".6"/>
+    <circle cx="30" cy="30" r="15" fill="${c}" opacity=".8"/>
+    <circle cx="30" cy="30" r="10" fill="${c}"/>
+    ${[0,72,144,216,288].map(a=>`<ellipse cx="${30+17*Math.cos(a*Math.PI/180)}" cy="${30+17*Math.sin(a*Math.PI/180)}" rx="10" ry="7" fill="${c}" transform="rotate(${a} ${30+17*Math.cos(a*Math.PI/180)} ${30+17*Math.sin(a*Math.PI/180)})" opacity=".7"/>`).join('')}
+    <circle cx="30" cy="30" r="6" fill="#f9e4b7"/>
+  </svg>`,
+];
+
+const positions = [
+  { left:'42%', bottom:'0%',  size:72 },
+  { left:'20%', bottom:'5%',  size:60 },
+  { left:'63%', bottom:'5%',  size:65 },
+  { left:'10%', bottom:'15%', size:52 },
+  { left:'72%', bottom:'12%', size:58 },
+  { left:'32%', bottom:'2%',  size:68 },
+  { left:'55%', bottom:'18%', size:50 },
+  { left:'5%',  bottom:'25%', size:46 },
+  { left:'80%', bottom:'22%', size:48 },
+  { left:'48%', bottom:'20%', size:54 },
+];
+
+function shuffleArray(a) {
+  const b = [...a];
+  for (let i = b.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [b[i],b[j]] = [b[j],b[i]];
+  }
+  return b;
+}
+
+function initBgPetals() {
+  const wrap = document.getElementById('bgPetals');
+  const colors = ['#f5c5cb','#cdb4db','#b5c9b0','#f7d5b5','#e8d5f5'];
+  for (let i=0; i<18; i++) {
+    const p = document.createElement('div');
+    p.className = 'bg-petal';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[i%colors.length]};
+      width:${8+Math.random()*10}px;
+      height:${12+Math.random()*14}px;
+      animation-duration:${6+Math.random()*8}s;
+      animation-delay:${Math.random()*8}s;
+    `;
+    wrap.appendChild(p);
+  }
+}
+
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectPerson(key) {
+  currentPerson = personData[key];
+
+  // Update screen 1
+  document.getElementById('s1Emoji').textContent = currentPerson.emoji;
+  document.getElementById('s1Title').innerHTML = currentPerson.s1Title.replace('\n', '<br>');
+  document.getElementById('s1Sub').textContent = currentPerson.s1Sub;
+
+  // Update screen 3
+  document.getElementById('s3Title').innerHTML = currentPerson.s3Title.replace('\n', '<br>');
+  document.getElementById('s3Text').textContent = currentPerson.s3Text;
+
+  // Update screen 4
+  document.getElementById('s4TagLine').textContent = currentPerson.s4TagLine;
+
+  // Update btn color on screen 1
+  document.querySelector('#s1 .btn').style.background = currentPerson.color.bg;
+
+  goScreen('s1');
+}
+
+function startBouquet() {
+  count = 0;
+  shuffledWishes = shuffleArray(currentPerson.wishes);
+  document.getElementById('garden').innerHTML = '';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('wishPlaceholder').style.display = 'block';
+  document.getElementById('wishTag').style.display = 'none';
+  document.getElementById('wishText').classList.remove('show');
+  document.getElementById('wishText').textContent = '';
+  document.getElementById('btnNext').textContent = '+ Бірінші гүлді қос';
+  document.getElementById('btnNext').className = 'btn btn-next';
+  document.getElementById('btnNext').style.background = '';
+  document.getElementById('btnNext').onclick = addFlower;
+  document.getElementById('wishCard').style.borderLeftColor = currentPerson.color.accent;
+  goScreen('s2');
+}
+
+function goSurprise() {
+  launchConfetti();
+  goScreen('s3');
+}
+
+function restart() { goScreen('s0'); }
+
+function addFlower() {
+  if (count >= TOTAL) return;
+
+  const wishText = shuffledWishes[count];
+  const pos = positions[count];
+  const colors = currentPerson.color.petals;
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  const shapeIdx = count % flowerShapes.length;
+  const svgFn = flowerShapes[shapeIdx];
+
+  const garden = document.getElementById('garden');
+  const div = document.createElement('div');
+  div.className = 'flower';
+  div.style.cssText = `
+    left:${pos.left}; bottom:${pos.bottom};
+    width:${pos.size}px; height:${pos.size * 1.35}px;
+  `;
+  div.innerHTML = svgFn(color, pos.size);
+  div._wish = wishText;
+  div.onclick = () => showWishInCard(div._wish);
+  garden.appendChild(div);
+
+  showWishInCard(wishText);
+
+  count++;
+  document.getElementById('progressFill').style.width = `${(count/TOTAL)*100}%`;
+
+  if (count >= TOTAL) {
+    setTimeout(() => {
+      const btn = document.getElementById('btnNext');
+      btn.textContent = 'Гүл шоғын толық көру 🌸';
+      btn.className = 'btn btn-next btn-finish';
+      btn.onclick = goSurprise;
+    }, 400);
+  } else {
+    document.getElementById('btnNext').textContent = `+ Тағы бір гүл (${count}/${TOTAL})`;
+  }
+}
+
+function showWishInCard(wish) {
+  const tag  = document.getElementById('wishTag');
+  const text = document.getElementById('wishText');
+  const placeholder = document.getElementById('wishPlaceholder');
+
+  placeholder.style.display = 'none';
+  tag.style.display = 'block';
+  tag.textContent = '🌸 Тілек';
+  tag.style.color = currentPerson.color.accent;
+
+  text.classList.remove('show');
+  setTimeout(() => {
+    text.textContent = wish;
+    text.classList.add('show');
+  }, 80);
+
+  document.getElementById('wishCard').style.borderLeftColor = currentPerson.color.accent;
+}
+
+function launchConfetti() {
+  const colors = currentPerson.color.petals.concat(['#f5c5cb','#d4a76a']);
+  for (let i=0; i<60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    const size = 6 + Math.random()*8;
+    c.style.cssText = `
+      left:${Math.random()*100}vw;
+      width:${size}px; height:${size * (Math.random()*2+.5)}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*.8}s;
+      border-radius:${Math.random()<.5 ? '50%' : '2px'};
+    `;
+    document.body.appendChild(c);
+    c.addEventListener('animationend', () => c.remove());
+  }
+}
+
+initBgPetals();
+</script>
+</body>
+</html>
